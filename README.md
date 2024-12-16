@@ -1,2 +1,2 @@
-# inductive_reasoning_benchmark
+# Inductive Reasoning Benchmark
 inductive reasoning benchmark using finite state transducer
