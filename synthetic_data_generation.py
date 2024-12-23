@@ -56,7 +56,7 @@ def generate_ISL_rules(args):
     return rules
 
 # generating rules
-def generate_OSL_rules(args):
+def generate_rules(args):
     # returns a list (length <= number_of_rules) of randomly generated and randomly truncated strings 
     def one_batch_generating_rules(args, number_of_rules):
         # generate number_of_rules random strings of length k from the vocab list
@@ -96,9 +96,28 @@ def generate_OSL_rules(args):
     # run one_batch_generating_rules and add to rules until len(rules) = args.number_of_rules
     while len(rules) < args.number_of_rules:
         new_rule = one_batch_generating_rules(args, 1)[0]
+
+        # checking that input is not a suffix of another input
+        is_suffix = False
+        for rule in rules:
+            if new_rule == rule[-len(new_rule):] or new_rule[-len(rule):] == rule:
+                is_suffix = True
+        if is_suffix:
+            continue
+
         possible_output = list(set(config.vocab).difference([new_rule[-1]])) + [''] # allow deletion
         output = random.choice(possible_output)
-        if((new_rule[:-1] + output) not in rules):
+
+        # checking that output is not a suffix of any input and if the input is not a suffix of any output
+        is_suffix = False
+        for rule in rules:
+            # checking current output with all inputs
+            if (new_rule[:-1] + output) == rule[-len((new_rule[:-1] + output)):] or (new_rule[:-1] + output)[-len(rule):] == rule:
+                is_suffix = True
+            # checking current input with all outputs
+            elif (new_rule == (rule[:-1] + rules[rule])[-len(new_rule):] or new_rule[-len((rule[:-1] + rules[rule])):] == (rule[:-1] + rules[rule])):
+                is_suffix = True
+        if not is_suffix:
             rules[new_rule] = output
     
     return rules
