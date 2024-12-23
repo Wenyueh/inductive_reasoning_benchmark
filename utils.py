@@ -26,11 +26,23 @@ Below is a list of input-output pairs. Please provide a set of rules that can ge
         prompt += f"{input} -> {output}\n"
 
     prompt += f"""
+Think step by step before providing the rules.
+
 Provide a minimum set of rules that can generate the output from the input. 
 You don't need to provide trivial rules where input and output are the same, like 'a -> a' or 'ab -> ab'.
-Notice that the input always have length <= {k}. Please provide each rule in the following format:
+Notice that the input of each rule always have length <= {k}. 
 
+Write rules in the following format:
 input -> output
+
+Surround rules by XML tags <START> and <END> like below:
+
+<START>
+input1 -> output1
+input2 -> output2
+...
+inputn -> outputn
+<END>
 """
 
     return prompt
