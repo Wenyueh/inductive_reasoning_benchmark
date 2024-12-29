@@ -7,14 +7,14 @@ from utils import generate_all_k_strings, translate_input_output_pairs
 # ISL function: input-strictly-local-k function
 # rule 1: input abb --> output aba: b is changed to an a if the previous two characters are ab
 # rule 2: input aaa --> aab
-# rule 3: input bbb --> bba
+# rule 3: input asdfbbb --> bba
 # input: abbbb --> abaaa
 # input: abbabb --> abaaba
 # input-stictly-local-k function: the output of a character in a string is determined by the last k characters of the string that comes before it
 # if we have an ISL-3 function: contain rules like aaa --> aab, ab --> ac, bbb --> bba
 
 
-# generating rules
+# generating ISL rules
 def generate_ISL_rules(args):
     def one_batch_generating_rules(args, number_of_rules):
         all_k_strings = ['']*number_of_rules
@@ -55,8 +55,8 @@ def generate_ISL_rules(args):
 
     return rules
 
-# generating rules
-def generate_rules(args):
+# generating OSL rules
+def generate_OSL_rules(args):
     # returns a list (length <= number_of_rules) of randomly generated and randomly truncated strings 
     def one_batch_generating_rules(args, number_of_rules):
         # generate number_of_rules random strings of length k from the vocab list
@@ -143,7 +143,7 @@ def generate_rules(args):
     return rules
     
 
-# generate sample dataset
+# generate characteristic sample dataset
 # S1 = {(w, w0) | [w ∈ Σ≤k ∧ f(w) = w0]}
 # sample size: Sum_1^k vocab^i = vocab^1 + vocab^2 + ... + vocab^k
 def generate_characteristic_sample(args, rules):
@@ -155,11 +155,10 @@ def generate_characteristic_sample(args, rules):
             sample[input] = output
     return sample
 
-# generate size n dataset containing the sample dataset
+# generate size = n * |characteristic sample| dataset containing the sample dataset
 def generate_fixed_size_dataset(args, rules, n):
     sample_dataset = generate_characteristic_sample(args, rules)
     assert n >= len(sample_dataset)
-    print(n, len(sample_dataset))
     extra_datapoints_number = n - len(sample_dataset)
     n= 0
     while n < extra_datapoints_number:
@@ -276,4 +275,3 @@ if __name__ == '__main__':
 
     prompt = translate_input_output_pairs(args, sample_dataset)
     print(prompt)
-
