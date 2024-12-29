@@ -52,3 +52,7 @@ if __name__ == '__main__':
     vocab = ['a', 'b']
     k = 3
     print(generate_all_k_strings(vocab, k)) # ['aaa', 'aab', 'aba', 'abb', 'baa', 'bab', 'bba', 'bbb']
+if __name__ == '__main__':
+    vocab = ['a', 'b']
+    k = 3
+    print(generate_all_k_strings(vocab, k)) # ['aaa', 'aab', 'aba', 'abb', 'baa', 'bab', 'bba', 'bbb']
