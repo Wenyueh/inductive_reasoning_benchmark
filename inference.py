@@ -2,6 +2,7 @@ from together import Together
 import argparse, os, random, config, json
 from tqdm import tqdm
 from synthetic_data_generation import synthetic_data_parser, generate_rules, generate_data, apply_rule
+from utils import extract_answer
 
 def call_model(args, text):
     client = Together(api_key=os.environ['TOGETHER_AI_API'])
@@ -12,37 +13,11 @@ def call_model(args, text):
         max_tokens=2000,
     )
     return output.choices[0].message.content
-    
-def extract_answer(output):
-    starts = [i for i in range(len(output)) if output.startswith('<START>', i)]
-    ends = [i for i in range(len(output)) if output.startswith('<END>', i)]
-    if len(starts) == 0 or len(ends) == 0:
-        return {'':''}
-    if len(starts) == len(ends):
-        last_start = starts[-1]
-        last_end = ends[-1]
-    else:
-        early = min(len(starts), len(ends))
-        last_start = starts[early-1]
-        last_end = ends[early-1]
 
-    output = output[last_start:last_end].replace('\n\n', '\n')
-
-    rules = {}
-    lines = output.split('\n')
-    for line in lines:
-        if '->' in line:
-            rule = line.split('->')
-            rules[rule[0].strip()] = rule[1].strip()
-
-    if rules == {}:
-        return {'':''}
-    
-    return rules
 
 def evaluation_single_datapoint(args, data, ground_truth_rules, predicted_rules):
-    for i,o in ground_truth_rules.items():
-        ground_truth_rules[i] = i[:args.k-1] + ground_truth_rules[i]
+    # for i,o in ground_truth_rules.items():
+    #     ground_truth_rules[i] = i[:args.k-1] + ground_truth_rules[i]
     def evaluate_precision_recall(ground_truth_rules, predicted_rules):
         recall = 0
         precision = 0
@@ -57,8 +32,8 @@ def evaluation_single_datapoint(args, data, ground_truth_rules, predicted_rules)
         return recall, precision
     
     def evaluate_compatibility(data, predicted_rules):
-        for i,o in predicted_rules.items():
-            predicted_rules[i] = predicted_rules[i][args.k-1:]
+        # for i,o in predicted_rules.items():
+        #     predicted_rules[i] = predicted_rules[i][args.k-1:]
         for input, output in data.items():
             if apply_rule(args, predicted_rules, input) != output:
                 return False
