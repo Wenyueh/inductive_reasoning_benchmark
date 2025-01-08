@@ -115,11 +115,11 @@ Below is a list of input-output pairs. Please provide a set of rules that can ge
         prompt += f"{input} -> {output}\n"
 
     if args.type == 'ISL':
-        prompt += ISL_prompt.format(k=k)
+        prompt += ISL_prompt.format(k)
     elif args.type == 'L_OSL':
-        prompt += L_OSL_prompt.format(k=k)
+        prompt += L_OSL_prompt.format(k)
     elif args.type == 'R_OSL':
-        prompt += R_OSL_prompt.format(k=k)
+        prompt += R_OSL_prompt.format(k)
 
     return prompt
 
