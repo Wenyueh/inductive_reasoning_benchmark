@@ -1,18 +1,7 @@
-from together import Together
 import argparse, os, random, config, json
 from tqdm import tqdm
 from synthetic_data_generation import synthetic_data_parser, generate_rules, generate_data, apply_rule
 from utils import extract_answer
-
-def call_model(args, text):
-    client = Together(api_key=os.environ['TOGETHER_AI_API'])
-    output = client.chat.completions.create(
-        model=args.model,
-        messages=[{"role": "user", "content": text}],
-        stream=False,
-        max_tokens=2000,
-    )
-    return output.choices[0].message.content
 
 
 def evaluation_single_datapoint(args, data, ground_truth_rules, predicted_rules):
@@ -91,7 +80,7 @@ def run_inference_and_evaluation(args, datapoints, rules):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # parameters for experiment setting
-    parser.add_argument('--model', type=str, default="Qwen QwQ-32B-Preview")
+    parser.add_argument('--model', type=str, default="Qwen/QwQ-32B-Preview")
     parser.add_argument('--num_of_datapoints', type=int, default=10)
 
     # parameters for synthetic data generation
@@ -116,4 +105,5 @@ if __name__ == '__main__':
     datapoints = generate_data(args, rules)
 
     run_inference_and_evaluation(args, datapoints, rules)
+
 
