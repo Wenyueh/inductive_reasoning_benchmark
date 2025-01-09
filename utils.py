@@ -40,6 +40,9 @@ left2 -> right2
 ...
 leftn -> rightn
 <END>
+
+THE RIGHT PART OF THE RULE SHOULD ONLY CONTAIN WHAT THE LAST CHARACTER OF THE LEFT PART IS TRANSFORMED INTO INSTEAD OF THE WHOLE STRING.
+THINK STEP BY STEP BEFORE PROVIDING THE RULES.
 """
 
 L_OSL_prompt = """
@@ -70,6 +73,9 @@ left2 -> right2
 ...
 leftn -> rightn
 <END>
+
+THE RIGHT PART OF THE RULE SHOULD ONLY CONTAIN WHAT THE LAST CHARACTER OF THE LEFT PART IS TRANSFORMED INTO INSTEAD OF THE WHOLE STRING.
+THINK STEP BY STEP BEFORE PROVIDING THE RULES.
 """
 
 R_OSL_prompt = """
@@ -100,6 +106,9 @@ left2 -> right2
 ...
 leftn -> rightn
 <END>
+
+THE RIGHT PART OF THE RULE SHOULD ONLY CONTAIN WHAT THE LAST CHARACTER OF THE LEFT PART IS TRANSFORMED INTO INSTEAD OF THE WHOLE STRING.
+THINK STEP BY STEP BEFORE PROVIDING THE RULES.
 """
 
 def translate_input_output_pairs(args, input_output_pairs):
@@ -198,6 +207,8 @@ def extract_answer(output):
 
 
 if __name__ == '__main__':
-    vocab = ['a', 'b']
-    k = 3
-    print(generate_all_k_strings(vocab, k)) # ['aaa', 'aab', 'aba', 'abb', 'baa', 'bab', 'bba', 'bbb']
+    k = 1
+    print(ISL_prompt.format(k))
+    # vocab = ['a', 'b']
+    # k = 3
+    # print(generate_all_k_strings(vocab, k)) # ['aaa', 'aab', 'aba', 'abb', 'baa', 'bab', 'bba', 'bbb']
