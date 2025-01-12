@@ -2,6 +2,7 @@ import argparse
 import random
 import time
 import config
+import sys
 from utils import generate_all_k_strings, translate_input_output_pairs
 
 # ISL function: input-strictly-local-k function
@@ -38,7 +39,11 @@ def generate_ISL_rules(args):
     
     rules = {}
     all_k_strings = []
+    loop_times = 0
     while len(all_k_strings) < args.number_of_rules:
+        loop_times += 1
+        if loop_times > 200:
+            sys.exit('Cannot generate enough rules')
         number_of_rules = args.number_of_rules - len(all_k_strings)
         new_rules = one_batch_generating_rules(args, number_of_rules)
         all_k_strings += new_rules
@@ -94,7 +99,11 @@ def generate_OSL_rules(args):
     rules[new_rule] = output
 
     # run one_batch_generating_rules and add to rules until len(rules) = args.number_of_rules
+    loop_times = 0
     while len(rules) < args.number_of_rules:
+        loop_times += 1
+        if loop_times > 200:
+            sys.exit('Cannot generate enough rules')
         new_rule = one_batch_generating_rules(args, 1)[0]
 
         # checking that input is not a suffix of another input
