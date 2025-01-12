@@ -49,7 +49,7 @@ L_OSL_prompt = """
 Think step by step before providing the rules.
 
 Provide a minimum set of rules that describe the input-output transformations, i.e. how an input character is transformed into its corresponding output character based on output characters preceding it in the output.
-Each rule describes how a character in the input is transformed into the output based on the context of the input characters preceding it.
+Each rule describes how a character in the input is transformed into the output based on the context of the output characters preceding it.
 
 For example:
 a rule 'abc --> a' means that the input character 'c' is transformed into 'a' when 'c' is preceded by 'ab' in the output.
@@ -81,8 +81,8 @@ THINK STEP BY STEP BEFORE PROVIDING THE RULES.
 R_OSL_prompt = """
 Think step by step before providing the rules.
 
-Provide a minimum set of rules that describe the input-output transformations, i.e. how an input character is transformed into its corresponding output character based on output characters preceding it in the output.
-Each rule describes how a character in the input is transformed into the output based on the context of the input characters succeeding it.
+Provide a minimum set of rules that describe the input-output transformations, i.e. how an input character is transformed into its corresponding output character based on output characters succeeding it in the output.
+Each rule describes how a character in the input is transformed into the output based on the context of the output characters succeeding it.
 
 For example:
 a rule 'abc --> b' means that the input character 'a' is transformed into 'b' when 'a' is succeeded by 'bc' in the output.
@@ -121,7 +121,7 @@ Below is a list of input-output pairs. Please provide a set of rules that can ge
 
 """
     for input, output in input_output_pairs.items():
-        prompt += f"{input} -> {output}\n"
+        prompt += f"(input: {input}, output: {output})\n"
 
     if args.type == 'ISL':
         prompt += ISL_prompt.format(k)
@@ -201,6 +201,13 @@ def extract_answer(output):
         rules = extract_markdown_answer(output)
     else:
         rules = extract_string_answer(output)
+
+    # remove space in rules
+    cleaned_rules = {}
+    if rules:
+        for k,v in rules.items():
+            cleaned_rules[k.replace(' ', '')] = v.replace(' ', '')
+    rules = cleaned_rules
 
     return rules
 
