@@ -5,7 +5,7 @@ from together import Together
 
 
 def call_model(args, text):
-    if 'wen' in args.model or 'lama' in args.model:
+    if 'wen' in args.model or 'lama' in args.model or 'deepseek' in args.model or 'mistral' in args.model:
         client = Together(api_key=os.environ['TOGETHER_AI_API'])
         output = client.chat.completions.create(
             model=args.model,
@@ -24,7 +24,7 @@ def call_model(args, text):
             max_tokens=2000,
             temperature=0.2,
             system=system_prompt,
-            messages=[{"role": "user", "content": message}],
+            messages=[{"role": "user", "content": text}],
         )
         return message.content[0].text
     elif 'opus' in args.model:
@@ -37,7 +37,7 @@ def call_model(args, text):
             max_tokens=2000,
             temperature=0.2,
             system=system_prompt,
-            messages=[{"role": "user", "content": message}],
+            messages=[{"role": "user", "content": text}],
         )
         return message.content[0].text
     elif 'gpt-4o' in args.model:
@@ -46,30 +46,27 @@ def call_model(args, text):
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": message},
+                {"role": "user", "content": text},
             ],
             temperature=0.2,
             max_tokens=2000,
         )
         return response.choices[0].message.content
-    elif 'gpt-4o-mini' in args.model:
+    elif 'o1-mini' in args.model:
         openai_client = OpenAI(api_key=os.environ['OPENAI_AI_API'])
         response = openai_client.chat.completions.create(
-            model="gpt-4o-mini",
+            model = "o1-mini", 
             messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": message},
-            ],
-            temperature=0.2,
-            max_tokens=2000,
-        )
+                {"role": "user", "content": text},
+            ]
+            )
         return response.choices[0].message.content
-    elif 'o1' in args.model:
+    elif 'o1-preview' in args.model:
         openai_client = OpenAI(api_key=os.environ['OPENAI_AI_API'])
         response = openai_client.chat.completions.create(
             model = "o1-preview", 
             messages=[
-                {"role": "user", "content": message},
+                {"role": "user", "content": text},
             ]
             )
         return response.choices[0].message.content
@@ -78,8 +75,9 @@ def call_model(args, text):
         response = openai_client.chat.completions.create(
             model = "claude-3-sonnet-20240229", 
             messages=[
-                {"role": "user", "content": message},
+                {"role": "user", "content": text},
             ],
             temperature=0.2,
             )
         return response.choices[0].message.content
+    
