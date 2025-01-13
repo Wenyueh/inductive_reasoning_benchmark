@@ -4,6 +4,7 @@ from synthetic_data_generation import synthetic_data_parser, generate_rules, gen
 from utils import extract_answer
 from model import call_model
 
+
 def evaluation_single_datapoint(args, data, ground_truth_rules, predicted_rules):
     # for i,o in ground_truth_rules.items():
     #     ground_truth_rules[i] = i[:args.k-1] + ground_truth_rules[i]
@@ -93,8 +94,12 @@ if __name__ == '__main__':
 
     model_name = args.model.replace('/', '_')
 
-    save_directory = f'result/{model_name}_{args.type}_{args.k}_{args.vocab_size}_{args.number_of_rules}_{args.sample_size_times}.json'
+    save_directory = f'result/{args.type}/{model_name}_{args.type}_{args.k}_{args.vocab_size}_{args.number_of_rules}_{args.sample_size_times}.json'
     args.save_directory = save_directory
+
+    if os.path.exists(save_directory):
+        print('This experiment has been done before: ', save_directory)
+        exit()
 
     random.seed(0)
 
