@@ -1,4 +1,4 @@
-import argparse, os, random, config, json
+import argparse, os, random, config, json, sys, time
 from tqdm import tqdm
 from synthetic_data_generation import synthetic_data_parser, generate_rules, generate_data, apply_rule
 from utils import extract_answer
@@ -25,10 +25,15 @@ def evaluation_single_datapoint(args, data, ground_truth_rules, predicted_rules)
         # for i,o in predicted_rules.items():
         #     predicted_rules[i] = predicted_rules[i][args.k-1:]
         for input, output in data.items():
-            if apply_rule(args, predicted_rules, input) != output:
+            if apply_rule(args, predicted_rules, input.strip()) != output:
                 return False
         return True
     
+    if args.type == 'R_OSL':
+        reverse_predicted_rules = {}
+        for k,v in predicted_rules.items():
+            reverse_predicted_rules[k[::-1]] = v
+        predicted_rules = reverse_predicted_rules
     recall, precision = evaluate_precision_recall(ground_truth_rules, predicted_rules)
     compatibility = evaluate_compatibility(data, predicted_rules)
 
@@ -41,14 +46,8 @@ def run_inference_and_evaluation(args, datapoints, rules):
     average_compatibility = []
     for i, datapoint in enumerate(tqdm(datapoints)):
         one_data_to_save = {}
-        print(rules[i])
-        print('------------------------------------')
         output = call_model(args, datapoint[1])
-        print(output)
         answer = extract_answer(output)
-        print('------------------------------------')
-        print(answer)
-        print('------------------------------------')
         recall, precision, compatibility = evaluation_single_datapoint(args, datapoint[0], rules[i], answer)
         print(f'Recall: {recall}, Precision: {precision}, Compatibility: {compatibility}')
         average_recall.append(recall)
@@ -78,6 +77,43 @@ def run_inference_and_evaluation(args, datapoints, rules):
     with open(args.save_directory, 'w') as f:
         json.dump(tosave, f)
 
+def reevaluate(args, file_name):
+    average_recall = []
+    average_precision = []
+    average_compatibility = []
+    with open(file_name, 'r') as f:
+        data = json.load(f)
+    datapoints = data['original_data']
+    for i, datapoint in enumerate(tqdm(datapoints)):
+        recall, precision, compatibility = evaluation_single_datapoint(args, datapoint['sample_data'], datapoint['ground_truth_rules'], datapoint['predicted_rules'])
+        average_recall.append(recall)
+        average_precision.append(precision)
+        average_compatibility.append(compatibility)
+        datapoints[i]['recall'] = recall
+        datapoints[i]['precision'] = precision
+        datapoints[i]['compatibility'] = compatibility
+
+    average_recall = sum(average_recall)/len(average_recall)
+    average_precision = sum(average_precision)/len(average_precision)
+    average_compatibility = sum(average_compatibility)/len(average_compatibility)
+
+    print(data['average_recall'])
+    print(data['average_precision'])
+    print(data['average_compatibility'])
+
+    print(f'Average Recall: {average_recall}')
+    print(f'Average Precision: {average_precision}')
+    print(f'Average Compatibility: {average_compatibility}')
+    time.sleep(0.5)
+
+    data['original_data'] = datapoints
+    data['average_recall'] = average_recall
+    data['average_precision'] = average_precision
+    data['average_compatibility'] = average_compatibility
+
+    with open(args.save_directory, 'w') as f:
+        json.dump(data, f)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # parameters for experiment setting
@@ -90,16 +126,29 @@ if __name__ == '__main__':
     parser.add_argument('--vocab_size', type=int, default=2, help='number of vocab')
     parser.add_argument('--number_of_rules', type=int, default=2, help='number of rules, must be smaller than vocab_size^k')
     parser.add_argument('--sample_size_times', type=int, default=4, help='number of sample to compute induction on, 1 means it is just the characteristic sample')
+    parser.add_argument('--reevaluate', action='store_true', help='re-evaluate the result')
+
+    parser.add_argument('--repeat', action='store_true', help='repeat the sample set')
     args = parser.parse_args()
 
     model_name = args.model.replace('/', '_')
 
-    save_directory = f'result/{args.type}/{model_name}_{args.type}_{args.k}_{args.vocab_size}_{args.number_of_rules}_{args.sample_size_times}.json'
-    args.save_directory = save_directory
+    if args.vocab_size >= 5:
+        save_directory = f'extra_table/{args.type}/{model_name}_{args.type}_{args.k}_{args.vocab_size}_{args.number_of_rules}_{args.sample_size_times}.json'
+        args.save_directory = save_directory
+    else:
+        save_directory = f'result/{args.type}/{model_name}_{args.type}_{args.k}_{args.vocab_size}_{args.number_of_rules}_{args.sample_size_times}.json'
+        args.save_directory = save_directory
+
+    if args.repeat:
+        save_directory = f'result/repeat_samplesize/{model_name}_{args.type}_{args.k}_{args.vocab_size}_{args.number_of_rules}_{args.sample_size_times}.json'
+        args.save_directory = save_directory
 
     if os.path.exists(save_directory):
         print('This experiment has been done before: ', save_directory)
-        exit()
+        if args.reevaluate:
+            reevaluate(args, save_directory)
+        sys.exit() 
 
     random.seed(0)
 
