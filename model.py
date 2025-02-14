@@ -7,12 +7,18 @@ from together import Together
 def call_model(args, text):
     if 'wen' in args.model or 'lama' in args.model or 'deepseek' in args.model or 'mistral' in args.model:
         client = Together(api_key=os.environ['TOGETHER_AI_API'])
-        output = client.chat.completions.create(
-            model=args.model,
-            messages=[{"role": "user", "content": text}],
-            stream=False,
-            max_tokens=2000,
-        )
+        if 'R1' in args.model:
+            output = client.chat.completions.create(
+                model=args.model,
+                messages=[{"role": "user", "content": text}],
+                steam=True,
+            )
+        else:
+            output = client.chat.completions.create(
+                model=args.model,
+                messages=[{"role": "user", "content": text}],
+                steam=False,
+            )
         return output.choices[0].message.content
     elif 'sonnet' in args.model:
         api_client = anthropic.Anthropic(
@@ -45,7 +51,6 @@ def call_model(args, text):
         response = openai_client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": text},
             ],
             temperature=0.2,
@@ -61,7 +66,16 @@ def call_model(args, text):
             ]
             )
         return response.choices[0].message.content
-    elif 'o1-preview' in args.model:
+    elif 'o3-mini' in args.model:
+        openai_client = OpenAI(api_key=os.environ['OPENAI_AI_API'])
+        response = openai_client.chat.completions.create(
+            model = "o3-mini", 
+            messages=[
+                {"role": "user", "content": text},
+            ]
+            )
+        return response.choices[0].message.content
+    elif 'o1' in args.model:
         openai_client = OpenAI(api_key=os.environ['OPENAI_AI_API'])
         response = openai_client.chat.completions.create(
             model = "o1-preview", 
