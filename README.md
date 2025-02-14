@@ -48,5 +48,6 @@ Below is the performance on function class with provably correct polynomial time
 <p align="center">
   <img width="662" alt="Screen Shot 2025-02-14 at 5 21 15 PM" src="https://github.com/user-attachments/assets/15642df6-b07c-4ed5-8474-374b2d66aa16" />
 </p>
-
+Even SOTA LLMs struggle in such function class:
+<img width="365" alt="Screen Shot 2025-02-14 at 5 23 04 PM" src="https://github.com/user-attachments/assets/8b4e9b65-f106-4991-bcfa-4321b8ed8a8b" />
 
