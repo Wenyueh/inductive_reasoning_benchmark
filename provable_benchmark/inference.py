@@ -1,10 +1,9 @@
 import argparse, os, random, config, json, sys, time
 from tqdm import tqdm
 from synthetic_data_generation import synthetic_data_parser, generate_rules, generate_data, apply_rule
-from utils import extract_answer
-from model import call_model
 sys.path.add('..')
-
+from model import call_model
+from utils import extract_answer
 
 def evaluation_single_datapoint(args, data, ground_truth_rules, predicted_rules):
     # for i,o in ground_truth_rules.items():
