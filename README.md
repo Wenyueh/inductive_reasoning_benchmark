@@ -1,6 +1,8 @@
 # Inductive Reasoning Benchmark
 
-![inductive_main.pdf](https://github.com/user-attachments/files/18804975/inductive_main.pdf)
+<p align="center">
+  <img width="742" alt="Screen Shot 2025-02-14 at 5 05 59 PM" src="https://github.com/user-attachments/assets/b7cbc723-01cc-45b4-ac61-18822ebf05ae" />
+</p>
 
 
 
