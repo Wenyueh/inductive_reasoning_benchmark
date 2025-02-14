@@ -85,7 +85,7 @@ if __name__ == '__main__':
 
     model_name = args.model.replace('/', '_')
 
-    save_directory = f'{model_name}.json'
+    save_directory = f'result/{model_name}.json'
 
     with open(save_directory, mode='w') as f:
         json.dump([], f)
