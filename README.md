@@ -37,3 +37,8 @@ To run the standard benchmark to directly obtain leaderboard result
 cd provable_benchmark
 python standard_run.py
 ```
+To run on the benchmark where there does not exist an algorithm to solve or provably solve the type of function class
+```
+cd exploration_benchmark
+python standard_run.py
+```
