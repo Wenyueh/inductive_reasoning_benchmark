@@ -3,6 +3,7 @@ from tqdm import tqdm
 from synthetic_data_generation import synthetic_data_parser, generate_rules, generate_data, apply_rule
 from utils import extract_answer
 from model import call_model
+sys.path.add('..')
 
 
 def evaluation_single_datapoint(args, data, ground_truth_rules, predicted_rules):
