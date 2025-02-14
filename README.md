@@ -42,3 +42,11 @@ To run on the benchmark where there does not exist an algorithm to solve or prov
 cd exploration_benchmark
 python standard_run.py
 ```
+
+## Performance
+Below is the performance on function class with provably correct polynomial time algorithm with k = 4, vocab size = 4, number of rules = 3
+<p align="center">
+  <img width="662" alt="Screen Shot 2025-02-14 at 5 21 15 PM" src="https://github.com/user-attachments/assets/15642df6-b07c-4ed5-8474-374b2d66aa16" />
+</p>
+
+
