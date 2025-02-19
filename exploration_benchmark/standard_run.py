@@ -116,9 +116,9 @@ if __name__ == '__main__':
                 # save each individual setting result
                 sample_size = min(args.sample_size, vocab_size**k * 2)
                 model_name = args.model.replace('/', '_')
-                existent_save_directory = f'exploration_result/{model_name}_{k}_{vocab_size}_{number_of_rules}_{sample_size}.json'
-                if not os.path.exists('exploration_result'):
-                    os.mkdir('exploration_result')
+                existent_save_directory = f'result/{model_name}_{k}_{vocab_size}_{number_of_rules}_{sample_size}.json'
+                if not os.path.exists('result'):
+                    os.mkdir('result')
 
                 print(f"Start running benchmarking with k={k}, vocab_size={vocab_size}, number_of_rules={number_of_rules}")
                 if os.path.exists(existent_save_directory):
