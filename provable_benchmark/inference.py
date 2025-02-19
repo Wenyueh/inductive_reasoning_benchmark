@@ -136,19 +136,25 @@ if __name__ == '__main__':
     if args.vocab_size >= 5:
         save_directory = f'extra_table/{args.type}/{model_name}_{args.type}_{args.k}_{args.vocab_size}_{args.number_of_rules}_{args.sample_size_times}.json'
         args.save_directory = save_directory
+        if not os.path.exists(f'extra_table/{args.type}'):
+            os.mkdir(f'extra_table/{args.type}')
     else:
         save_directory = f'result/{args.type}/{model_name}_{args.type}_{args.k}_{args.vocab_size}_{args.number_of_rules}_{args.sample_size_times}.json'
         args.save_directory = save_directory
+        if not os.path.exists(f'result/{args.type}'):
+            os.mkdir(f'result/{args.type}')
 
     if args.repeat:
         save_directory = f'result/repeat_samplesize/{model_name}_{args.type}_{args.k}_{args.vocab_size}_{args.number_of_rules}_{args.sample_size_times}.json'
         args.save_directory = save_directory
+        if not os.path.exists('result/repeat_samplesize'):
+            os.mkdir('result/repeat_samplesize')
 
     if os.path.exists(save_directory):
         print('This experiment has been done before: ', save_directory)
         if args.reevaluate:
             reevaluate(args, save_directory)
-        sys.exit() 
+        sys.exit()
 
     random.seed(0)
 
