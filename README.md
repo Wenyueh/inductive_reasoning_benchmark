@@ -28,7 +28,7 @@ export TOGETHER_AI_API = 'you api key'
 ```
 Run experiment in a single setting in the provably correct benchmark
 ```
-cd provable_benchmark
+cd standard_benchmark
 python inference.py --type ISL --model mdoel_name --k 2 --vocab_size 2 --number_of_rules 1 --sample_size_times 2
 # the simplest ISL function class with smallest hypothesis space
 ```
