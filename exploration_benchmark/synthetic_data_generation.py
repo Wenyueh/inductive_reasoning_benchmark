@@ -1,4 +1,5 @@
 import random, config, argparse
+from utils import translate_input_output_pairs
 
 def generate_IOSL_rules(args):
     def is_suffix(rule, rules):
@@ -51,6 +52,38 @@ def apply_IOSL_rule(args, rules, input):
             output += input[i]
     return output
 
+def extract_answer(output):
+    starts = [i for i in range(len(output)) if output.startswith('<START>', i)]
+    ends = [i for i in range(len(output)) if output.startswith('<END>', i)]
+    if len(starts) == 0 or len(ends) == 0:
+        return {'':''}
+    if len(starts) == len(ends):
+        last_start = starts[-1]
+        last_end = ends[-1]
+    else:
+        early = min(len(starts), len(ends))
+        last_start = starts[early-1]
+        last_end = ends[early-1]
+
+    output = output[last_start:last_end].replace('\n\n', '\n')
+
+    rules = {}
+    lines = output.split('\n')
+    for line in lines:
+        if ':' not in line:
+            continue
+        else:
+            t = line.split(':')[0].strip()
+            l = line.split(':')[1].strip()
+            if '->' in l:
+                rule = l.split('->')
+                rules[rule[0].strip()] = [rule[1].strip(), t]
+
+    if rules == {}:
+        return {'':''}
+    
+    return rules
+
 def apply_rule(args, rules, input):
     assert args.type == 'IOSL'
     return apply_IOSL_rule(args, rules, input)
@@ -66,6 +99,19 @@ def generate_fixed_size_dataset(args, rules, n):
         if input not in dataset:
             dataset[input] = output
     return dataset
+
+
+def generate_data(args, rules):
+    datapoints = []
+    for i in range(args.num_of_datapoints):
+        # Generate rules
+        rules_i = rules[i]
+        # Generate sample dataset
+        sample_dataset = generate_fixed_size_dataset(args, rules_i, args.sample_size)
+        prompt = translate_input_output_pairs(args, sample_dataset)
+        datapoints.append([sample_dataset, prompt])
+
+    return datapoints
 
 
 def synthetic_data_parser():
