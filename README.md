@@ -64,3 +64,12 @@ Model | average recall | average precision | average compatibility
 Llama-3.1 8b | 0.00 | 0.00 | 0.00
 Llama-3.3 70b | 0.0655 | 0.0576 | 0.0012
 DeepSeek-R1-Distill-Llama-70B | 0.0384 | 0.05139 | 0.0078 
+
+
+## Exploration Benchmark Leaderboard
+
+Model | average recall | average precision | average compatibility
+------|------|------|------
+Llama-3.1 8b | 0.00 | 0.00 | 0.00
+Llama-3.3 70b | 0.0133 | 0.0021 | 0.00
+DeepSeek-R1-Distill-Llama-70B | 0.0210 | 0.0102 | 0.00 
