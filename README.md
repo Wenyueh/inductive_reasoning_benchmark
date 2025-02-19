@@ -34,7 +34,7 @@ python inference.py --type ISL --model mdoel_name --k 2 --vocab_size 2 --number_
 ```
 To run the standard benchmark to directly obtain leaderboard result
 ```
-cd provable_benchmark
+cd standard_benchmark
 python standard_run.py --model xxx
 ```
 To run on the benchmark where there does not exist an algorithm to solve or provably solve the type of function class
