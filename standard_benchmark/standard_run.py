@@ -101,7 +101,9 @@ if __name__ == '__main__':
 
     model_name = args.model.replace('/', '_')
 
-    args.save_directory = f'standard_benchmark/{model_name}.json'
+    args.save_directory = f'standard_result/{model_name}.json'
+    if not os.path.exists('standard_result'):
+        os.mkdir('standard_result')
 
     print('Start running standard benchmark')
     print("Results will be saved in ", args.save_directory)
@@ -132,6 +134,8 @@ if __name__ == '__main__':
 
                     model_name = args.model.replace('/', '_')
                     existent_save_directory = f'result/{args.type}/{model_name}_{args.type}_{args.k}_{args.vocab_size}_{args.number_of_rules}_{args.sample_size_times}.json'
+                    if not os.path.exists(f'result/{args.type}'):
+                        os.mkdir(f'result/{args.type}')
                     if os.path.exists(existent_save_directory):
                         print('This setting has been done before: ', existent_save_directory)
                         with open(existent_save_directory, 'r') as f:
