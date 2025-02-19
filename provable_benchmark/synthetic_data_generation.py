@@ -2,6 +2,7 @@ import argparse
 import random, json
 import time
 import config
+from tqdm import tqdm
 import sys
 from utils import generate_all_k_strings, translate_input_output_pairs, translate_fewshot_input_output_pairs
 
@@ -177,7 +178,7 @@ def generate_ISL_characteristic_sample(args, rules):
     return sample
 
 def generate_OSL_characteristic_sample(args, rules):
-    def condition_satisfied(sample, i):
+    def condition_satisfied(sample):
         all_possible_suffix = []
         for k in range(1, args.k+1):
             one_sample_inputs = generate_all_k_strings(config.vocab, k)
@@ -213,27 +214,29 @@ def generate_OSL_characteristic_sample(args, rules):
             sample[input] = output
     sample = retain_shorted_input(sample)
 
+    trial_number = 1
     # make sure that it includes all possible k-1 suffix
     nothing_added = True
     # if it does not include all possible suffix, keep adding until we can't add anymore
-    while not condition_satisfied(sample, i):
-        i += 1
-        for k in range((i-1)*args.k + 1, i * args.k+1):
-            one_sample_inputs = generate_all_k_strings(config.vocab, k)
-            for input in one_sample_inputs:
-                output = apply_rule(args, rules, input)
-                # if same output, do not add as we don't need repetitive output suffix
-                # if output > k, do not add as it is then not the minimum characterisitc sample
-                if output not in sample.values() and len(output) <= args.k:
-                    sample[input] = output
-                    nothing_added = False
-                elif output in sample.values() and len(input) < len([k for k, v in sample.items() if v == output][0]):
-                    sample[input] = output
-                    nothing_added = False
+    while not condition_satisfied(sample) or trial_number < args.k:
+        k = args.k + trial_number
+        one_sample_inputs = list(set(generate_all_k_strings(config.vocab, k)).difference(set(generate_all_k_strings(config.vocab, k-1))))
+        for input in one_sample_inputs:
+            output = apply_rule(args, rules, input)
+            # if same output, do not add as we don't need repetitive output suffix
+            # if output > k, do not add as it is then not the minimum characterisitc sample
+            if output not in sample.values() and len(output) <= args.k:
+                sample[input] = output
+                nothing_added = False
+            elif output in sample.values() and len(input) < len([k for k, v in sample.items() if v == output][0]):
+                sample[input] = output
+                nothing_added = False
         sample = retain_shorted_input(sample)
 
         if nothing_added:
             break
+
+        trial_number += 1
 
     # ensuring onwardness
     def add_intermediate_steps(args, sample):
@@ -378,7 +381,7 @@ def synthetic_data_parser():
 
 def generate_data(args, rules):
     datapoints = []
-    for i in range(args.num_of_datapoints):
+    for i in tqdm(range(args.num_of_datapoints), desc='Generating data'):
         # Generate rules
         rules_i = rules[i]
         # Generate sample dataset
@@ -478,3 +481,4 @@ if __name__ == '__main__':
 
     # prompt = translate_input_output_pairs(args, sample_dataset)
     # print(prompt)
+
