@@ -54,12 +54,16 @@ Even SOTA LLMs struggle in such function class:
 <img width="365" alt="Screen Shot 2025-02-14 at 5 23 04 PM" src="https://github.com/user-attachments/assets/8b4e9b65-f106-4991-bcfa-4321b8ed8a8b" />
 </p>
 
+
+Average Compatibility: 0.00029968669118
+
 ## Standard Benchmark Leaderboard
 
 Model | average recall | average precision | average compatibility
 ------|------|------|------
 Llama-3.1 8b | 0.00 | 0.00 | 0.00
 Llama-3.3 70b | 0.0655 | 0.0576 | 0.0012
+Qwen/Qwen2.5-Coder-32B-Instruct | 0.0726 | 0.0066 | 0.0003 
 DeepSeek-R1-Distill-Llama-70B | 0.0384 | 0.05139 | 0.0078 
 
 
