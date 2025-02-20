@@ -1,6 +1,7 @@
 import argparse, os, random, config, json, sys, time
 from tqdm import tqdm
 from exploration_data_generation import generate_data, generate_rules, apply_rule, extract_answer
+sys.path.append('..')
 from model import call_model
 
 
