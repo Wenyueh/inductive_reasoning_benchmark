@@ -4,6 +4,7 @@ import time
 import config
 from tqdm import tqdm
 import sys
+sys.path.add('..')
 from utils import generate_all_k_strings, translate_input_output_pairs, translate_fewshot_input_output_pairs
 
 # ISL function: input-strictly-local-k function
