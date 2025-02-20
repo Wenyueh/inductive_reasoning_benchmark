@@ -1,4 +1,5 @@
 import random, config, argparse
+sys.path.append('..')
 from utils import translate_input_output_pairs
 
 def generate_IOSL_rules(args):
