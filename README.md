@@ -55,7 +55,6 @@ Even SOTA LLMs struggle in such function class:
 </p>
 
 
-Average Compatibility: 0.00029968669118
 
 ## Standard Benchmark Leaderboard
 
