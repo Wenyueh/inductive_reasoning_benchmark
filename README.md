@@ -64,7 +64,7 @@ Llama-3.1 8b | 0.00 | 0.00 | 0.00
 Qwen/Qwen2.5-Coder-32B-Instruct | 0.0726 | 0.0066 | 0.0003 
 Llama-3.3 70b | 0.0655 | 0.0576 | 0.0012
 DeepSeek-R1-Distill-Llama-70B | 0.0384 | 0.05139 | 0.0078 
-o3-mini | 0.2842 | 0.4128 | 0.0591 
+o3-mini | 0.2893 | 0.4312 | 0.0569
 
 
 ## Exploration Benchmark Leaderboard
