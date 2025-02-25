@@ -96,6 +96,7 @@ if __name__ == '__main__':
     parser.add_argument('--number_of_rules', type=int, default=4, help='number of rules, must be smaller than vocab_size^k')
     parser.add_argument('--sample_size_times', type=int, default=2, help='number of sample to compute induction on, 1 means it is just the characteristic sample')
     parser.add_argument('--reevaluate', action='store_true', help='re-evaluate the result')
+    parser.add_argument('--log_eval', action='store_true', help='use log value for weight computation in weighted average')
 
     parser.add_argument('--repeat', action='store_true', help='repeat the sample set')
     args = parser.parse_args()
@@ -132,6 +133,8 @@ if __name__ == '__main__':
                     args.number_of_rules = number_of_rules
                     print(f'Running the setting of function type {type}, k: {k}, vocab_size: {vocab_size}, number_of_rules: {number_of_rules}')
                     weight = vocab_size**k * number_of_rules
+                    if args.log_eval:
+                        weight = np.log(weight)
 
                     model_name = args.model.replace('/', '_')
                     existent_save_directory = f'result/{args.type}/{model_name}_{args.type}_{args.k}_{args.vocab_size}_{args.number_of_rules}_{args.sample_size_times}.json'
@@ -158,7 +161,7 @@ if __name__ == '__main__':
                         rules = generate_rules(args)
                         datapoints = generate_data(args, rules)
                         average_recall, average_precision, average_compatibility = run_inference_and_evaluation(args, datapoints, rules, existent_save_directory)
-                    
+                        
                     scores.append((average_recall, average_precision, average_compatibility, weight))
 
                     total_weight += weight
