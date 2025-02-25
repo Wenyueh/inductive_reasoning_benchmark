@@ -81,6 +81,7 @@ if __name__ == '__main__':
     parser.add_argument('--sample_size', type=int, default=100, help='number of sample to compute induction on')
     parser.add_argument('--shot_number', type=int, default=1)
     parser.add_argument('--num_of_datapoints', type=int, default=10)
+    parser.add_argument('--log_eval', action='store_true', help='use log weight when computing weighted average')
 
     # parameters for experiment setting
     parser.add_argument('--model', type=str, default="Qwen/QwQ-32B-Preview")
