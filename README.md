@@ -66,6 +66,15 @@ Llama-3.3 70b | 0.0655 | 0.0576 | 0.0012
 DeepSeek-R1-Distill-Llama-70B | 0.0384 | 0.05139 | 0.0078 
 o3-mini | 0.2893 | 0.4312 | 0.0569
 
+Results using log weight to compute the weighted average:
+
+Model | average recall | average precision | average compatibility
+------|------|------|------
+Llama-3.1 8b | 0.00 | 0.00 | 0.00
+Qwen/Qwen2.5-Coder-32B-Instruct | 0.0748 | 0.0660 | 0.0048 
+Llama-3.3 70b | 0.0871 | 0.0750 | 0.0087
+DeepSeek-R1-Distill-Llama-70B | 0.2317 | 0.2466 | 0.0863
+o3-mini | 0.5758 | 0.6389 | 0.3393
 
 ## Exploration Benchmark Leaderboard
 
