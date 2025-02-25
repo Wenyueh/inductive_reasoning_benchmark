@@ -43,6 +43,11 @@ cd exploration_benchmark
 python standard_run.py --model xxx
 ```
 
+If you want to use log of the weight for each setting when computing the weighted average, use 
+```
+--log_eval
+```
+
 ## Performance
 Below is the performance on function class with provably correct polynomial time algorithm with k = 4, vocab size = 4, number of rules = 3
 <p align="center">
