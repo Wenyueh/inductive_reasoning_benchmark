@@ -19,7 +19,7 @@ from utils import generate_all_k_strings, translate_input_output_pairs, translat
 
 # generating ISL rules
 def generate_ISL_rules(args):
-    def one_batch_generating_rules(args, number_of_rules):
+    def one_batch_generating_rules(args, number_of_rules, generated_strings):
         all_k_strings = ['']*number_of_rules
         for _ in range(args.k):
             for i in range(number_of_rules):
@@ -30,7 +30,8 @@ def generate_ISL_rules(args):
             length = random.randint(2, args.k)
             truncated_string = all_k_string[:length]
             is_suffix = False
-            for s in random_k_all_k_strings:
+            for s in random_k_all_k_strings + generated_strings:
+                # no conflict or repetition
                 if truncated_string == s[-len(truncated_string):] or truncated_string[-len(s):] == s:
                     is_suffix = True
             if not is_suffix:
@@ -47,7 +48,7 @@ def generate_ISL_rules(args):
         if loop_times > 200:
             sys.exit('Cannot generate enough rules')
         number_of_rules = args.number_of_rules - len(all_k_strings)
-        new_rules = one_batch_generating_rules(args, number_of_rules)
+        new_rules = one_batch_generating_rules(args, number_of_rules, all_k_strings)
         all_k_strings += new_rules
         all_k_strings = list(set(all_k_strings))
 
@@ -59,6 +60,19 @@ def generate_ISL_rules(args):
     for k_string in all_k_strings:
         possible_output = list(set(config.vocab).difference([k_string[-1]])) + [''] # allow deletion
         rules[k_string] = random.choice(possible_output)
+
+    # check minimal length of rules
+    # check if there is a set of rules with left part r such that v + r = o for all v in vocab
+    def is_minimality(rules):
+        for i in range(1, len(config.vocab)):
+            rule_strings = [(r+o)[i:] for r, o in rules.items()] 
+            for rule_string in rule_strings:
+                if rule_strings.count(rule_string) == len(config.vocab) ** i:
+                    return False
+        return True
+    
+    if not is_minimality(rules):
+        return []
 
     return rules
 
@@ -131,13 +145,19 @@ def generate_rules(args):
     rules = []
 
     if not args.repeat:
-        for i in range(args.num_of_datapoints):
+        while len(rules) < args.num_of_datapoints:
             if args.type == 'ISL':
-                rules.append(generate_ISL_rules(args))
+                rule = generate_ISL_rules(args)
+                if rule:
+                    rules.append(rule)
             elif args.type == 'L_OSL':
-                rules.append(generate_OSL_rules(args))
+                rule = generate_OSL_rules(args)
+                if rule:
+                    rules.append(rule)
             elif args.type == 'R_OSL':
-                rules.append(generate_OSL_rules(args))
+                rule = generate_OSL_rules(args)
+                if rule:
+                    rules.append(rule)
             else:
                 raise ValueError('Invalid type')
     else:
